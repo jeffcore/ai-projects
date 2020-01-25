@@ -10,8 +10,7 @@ class Game:
     MAX, MIN = 1000, -1000
 
     def __init__(self):
-        self.board = self.new_board()
-        
+        self.board = self.new_board()        
 
     def display_instruct(self):
         """Display game instructions."""
@@ -120,32 +119,20 @@ class Game:
         print("Fine....")
 
         return move
-
-    def run(self):
-        self.display_instruct()
-        computer, human = self.pieces()
-        turn = self.X
-        winner = None
-        
-        while winner is None:
-            if turn == human:
-                move = self.human_move()
-                self.board[move] = human
-            else:                
-                not_used, move_index = self.minimax_alpha(computer, True, computer, self.board, 0, self.MIN, self.MAX)
-                # move_index = self.minimax(computer, True, computer, self.board, 0)
-                #print(f'min final {move_index}')
-                
-                legal = self.legal_moves(self.board)
-
-                self.board[legal[move_index]] = computer
-            self.display_board(self.board)
-            winner = self.winner(self.board)
-            turn = self.next_turn(turn)
-            # print(self.winner(self.board))
-        self.winner_message(human)
-
-    def minimax(self, computer, maximizing_player, turn, board, depth):
+   
+    def check_terminal_state(self, board, computer):
+        winner = self.winner(board)
+        if winner is not None: 
+            if winner == self.TIE:
+                return True, 0
+            elif winner == computer:
+                return True, 1
+            else: 
+                return True, -1
+        else:
+            return False, None
+    
+     def minimax(self, computer, maximizing_player, turn, board, depth):
         # print('minimax function called')
         legal = self.legal_moves(board)  
         # print(f'legal moves {legal}') 
@@ -200,19 +187,9 @@ class Game:
                 # print(f'min player {min(minimax_list)}')
                 return min(minimax_list)
 
-    def check_terminal_state(self, board, computer):
-        winner = self.winner(board)
-        if winner is not None: 
-            if winner == self.TIE:
-                return True, 0
-            elif winner == computer:
-                return True, 1
-            else: 
-                return True, -1
-        else:
-            return False, None
-        
+
     def minimax_alpha(self, computer, maximizing_player, turn, board, depth, alpha, beta):
+        """minimax alpha beta pruning algorithm."""
         # print('minimax function called')
         legal = self.legal_moves(board)  
 
@@ -251,11 +228,9 @@ class Game:
                     # print('pruned max')
                     return best, best_index
 
-                alpha = max(alpha, best)        
+                alpha = max(alpha, best)     
                 
-                
-            return best, best_index
-                
+            return best, best_index                
         else:
             # print('in min loop')   
             best = self.MAX     
@@ -291,7 +266,31 @@ class Game:
         else:
             print('the computer won')
 
+    def run(self):
+        self.display_instruct()
+        computer, human = self.pieces()
+        turn = self.X
+        winner = None
+        
+        while winner is None:
+            if turn == human:
+                move = self.human_move()
+                self.board[move] = human
+            else:         
+                ### change AI algorithm here       
+                not_used, move_index = self.minimax_alpha(computer, True, computer, self.board, 0, self.MIN, self.MAX)
+                # move_index = self.minimax(computer, True, computer, self.board, 0)
+                #print(f'min final {move_index}')
+                
+                legal = self.legal_moves(self.board)
+
+                self.board[legal[move_index]] = computer
+            self.display_board(self.board)
+            winner = self.winner(self.board)
+            turn = self.next_turn(turn)
+            # print(self.winner(self.board))
+        self.winner_message(human)
+
 if __name__ == '__main__':
     game = Game()
     game.run()
-    # print(f'Winner {game.winner(game.board)}')
