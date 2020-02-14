@@ -1,6 +1,10 @@
 import math
 from tsp import TravelingSalesmanProblem
 import json
+from helpers import *
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 
 def main():
@@ -16,8 +20,8 @@ def main():
     capitals_tsp = TravelingSalesmanProblem(capitals_list[:num_cities], shuffle=shuffle)
     starting_city = capitals_tsp.path[0]
     print("Initial path value: {:.2f}".format(-capitals_tsp.utility))
-    # print(capitals_tsp.path)  # The start/end point is indicated with a yellow star
-    # show_path(capitals_tsp.coords, starting_city)
+    print(capitals_tsp.path)  # The start/end point is indicated with a yellow star
+    show_path(capitals_tsp.coords, starting_city)
 
 if __name__ == "__main__":
     main()
