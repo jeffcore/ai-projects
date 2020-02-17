@@ -80,7 +80,6 @@ class TravelingSalesmanProblem:
             self.__utility = self.__get_value()
         return self.__utility
         
-
     def dist(self, xy1, xy2):
         """ Calculate the distance between two points.
         
@@ -112,10 +111,15 @@ class TravelingSalesmanProblem:
         """       
         
         for offset in range(len(self.path) - 1):
+            # print('offset', offset)
             for width in range(2, len(self.path) - 1):
+                # print('width' , width)
                 nodes = deque(self.path)
+                # print(nodes)
                 nodes.rotate(offset)
+                # print('after rotate', nodes)
                 path = [nodes.popleft() for _ in range(width)][::-1] + list(nodes)
+                # print('path', path)
                 yield TravelingSalesmanProblem(path)
     
     def get_successor(self):

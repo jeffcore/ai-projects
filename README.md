@@ -14,5 +14,5 @@ Code implemenations from Sentdex videos.
 
 ## Credit for Code Used:
 * QLearning Videos - https://www.youtube.com/user/sentdex
-* TicTacToe Game Code - Python Programming for the Absolute Beginner, 3rd Edition - Michael Dawson
+* TicTacToe Game Code - Based my game code around the implementation in Python Programming for the Absolute Beginner, 3rd Edition - Michael Dawson
 * TSP - Initial problem setup code from Udacity AI Nanodegree Course
