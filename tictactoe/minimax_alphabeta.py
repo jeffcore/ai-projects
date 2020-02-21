@@ -100,7 +100,7 @@ class Game:
         return computer, human
 
     def next_turn(self, turn):
-        """Switch turnes"""
+        """Switch turns"""
         if turn == self.X:
             return self.O
         else:
@@ -132,111 +132,167 @@ class Game:
         else:
             return False, None
     
-     def minimax(self, computer, maximizing_player, turn, board, depth):
-        # print('minimax function called')
-        legal = self.legal_moves(board)  
-        # print(f'legal moves {legal}') 
-        minimax_list = []  
-        minimax_total = 0
+    def is_board_empty(self, board):        
+        for space in board:
+            if space != self.EMPTY:
+                return False
+        return True
 
+    def computer_opening_move(self, board):
+        if self.is_board_empty(board):
+            corner_moves = [0,2,6,8]
+            return corner_moves[random.randrange(0,3)]
+
+        return -1
+
+    def minimax(self, computer, maximizing_player, turn, board, depth):
+        """            
+        created one function to handle entier mimimax algorithm, instead of having a starter function
+        """
+        # beginning game moves
+        opening_move = self.computer_opening_move(board)
+        if opening_move > -1:
+            return opening_move
+
+        # get current legal moves
+        legal = self.legal_moves(board)  
+        
+        # terminal state - check for end of game move
         # check for winner or tie
-        winner = self.winner(board)
-        if winner is not None: 
-            if winner == self.TIE:
-                return 0
-            elif winner == computer:
-                return 1
-            else: 
-                return -1
+        terminal, state = self.check_terminal_state(board, computer)
+        if terminal:
+            return state
         
         if depth > self.TREE_DEPTH or len(legal) == 0:
             return 0  
         
+        # holds results for current board moves
+        minimax_list = []  
+        
+        # analyze all legal moves and append results to minimax_list
         for move in legal:
-            # print(f'legal move {move}')
             new_board = board.copy()
             new_board[move] = turn
-            # print(f"{' ' * depth} in recu {self.display_board(new_board)}")           
-            # print(f'turn in loop {turn}')   
              
             if maximizing_player:  
-                # print('in max loop')                             
-                result = self.minimax(computer, False, self.next_turn(turn), new_board, depth+1 )
+                result = self.minimax(computer, False, self.X, new_board, depth+1 )
                 if result is not None:                    
                     minimax_list.append(result)
             else:
-                # print('in min loop')           
-                result = self.minimax(computer, True, self.next_turn(turn), new_board, depth+1 )
+                result = self.minimax(computer, True, self.O, new_board, depth+1 )
                 if result is not None:                    
                     minimax_list.append(result)
-                # print(f'minimax_total in loop {minimax_total}')
 
-        # print(f'final look minman total {minimax_total} depth {depth}')
-        # if depth < 3:
-        #     print(f"{' ' * depth} isMax {maximizing_player} minimax list {minimax_list}")
-        
+        # if back at top of tree return the best move
         if depth == 0:
             # print(f'max player {max(minimax_list)}')
-            # print(f'minimax list {minimax_list}')
             return minimax_list.index(max(minimax_list))
         else:
+            # return the max or min of the minimax_list 
             if maximizing_player:
-                # print(f'max player {max(minimax_list)}')
                 return max(minimax_list)
             else:
-                # print(f'min player {min(minimax_list)}')
                 return min(minimax_list)
+    
+    def minimax_decision_aima(self, computer, turn, board, depth):
+        """
+        version of minimax that is closest to AIMA pseudocode, has a starter function            
+        """
+        opening_move = self.computer_opening_move(board)
+        if opening_move > -1:
+            return opening_move
+            
+        moves = self.legal_moves(board)  
+        best_scores = []  
+        for move in moves:     
+            new_board = board.copy()
+            new_board[move] = turn
+            best_score = self.minimax_aima(computer, False, self.O, new_board, depth )
+            best_scores.append(best_score)
 
+        print(f'best_scores {best_scores}')
+        
+        return best_scores.index(max(best_scores))        
+        
+    def minimax_aima(self, computer, maximizing_player, turn, board, depth):
+        """
+        version of minimax that is closest to AIMA pseudocode,
+        """
+        # get current legal moves
+        legal = self.legal_moves(board)  
+        
+        # terminal state - check for end of game move
+        # check for winner or tie
+        terminal, state = self.check_terminal_state(board, computer)
+        if terminal:
+            return state
+            
+        # depth check
+        if depth > self.TREE_DEPTH or len(legal) == 0:
+            return 0  
+        
+        if maximizing_player:
+            v = self.MIN
+        else:
+            v = self.MAX
+        
+        # analyze all legal moves and append results to minimax_list
+        for move in legal:            
+            new_board = board.copy()
+            new_board[move] = turn          
+             
+            if maximizing_player:                                             
+                v = max(v, self.minimax_aima(computer, False, self.O, new_board, depth+1))
+            else:                
+                v = min(v, self.minimax_aima(computer, True, self.X, new_board, depth+1 ))
+       
+        return v
 
     def minimax_alpha(self, computer, maximizing_player, turn, board, depth, alpha, beta):
-        """minimax alpha beta pruning algorithm."""
-        # print('minimax function called')
-        legal = self.legal_moves(board)  
-
-        # if depth == 0:
-        #     print(f'legal moves {legal}') 
-
+        """
+        minimax alpha beta pruning algorithm.
+        """
+        # check for opening move 
+        opening_move = self.computer_opening_move(board)
+        if opening_move > -1:
+            return opening_move
+        
+        # check terminal state
         terminal, state = self.check_terminal_state(board, computer)
         if terminal:
             return state, 0
 
+        legal = self.legal_moves(board)  
+
         if depth > self.TREE_DEPTH or len(legal) == 0:
             return 0, 0
-        
-        # print(f"{' ' * depth} in recu {self.display_board(new_board)}")           
-        # print(f'turn in loop {turn}')   
         
         if maximizing_player:  
             best = self.MIN
             best_index = 0
-            for index, move in enumerate(legal):                                
-                # print(f'legal move {move}')
+            for index, move in enumerate(legal):                                                
                 new_board = board.copy()
                 new_board[move] = turn
-                # print('in max loop')                             
-                result, not_used = self.minimax_alpha(computer, False, self.next_turn(turn), new_board, depth+1, alpha, beta)
                 
+                result, not_used = self.minimax_alpha(computer, False, self.next_turn(turn), new_board, depth+1, alpha, beta)
+                if depth == 0:
+                    print(result)
                 if result > best:
                     best_index = index   
                 
-                # if depth == 0:
-                #     print(f"{' ' * depth} isMax {maximizing_player} index {index} best index {best_index}")
-
                 best = max(best, result)
 
-                if best >= beta:
-                    # print('pruned max')
+                # prune tree
+                if best >= beta:                    
                     return best, best_index
 
                 alpha = max(alpha, best)     
                 
             return best, best_index                
-        else:
-            # print('in min loop')   
+        else:           
             best = self.MAX     
             best_index = 0
-            for index, move in enumerate(legal):   
-                # print(f'legal move {move}')
+            for index, move in enumerate(legal):                
                 new_board = board.copy()
                 new_board[move] = turn
                 result, not_used = self.minimax_alpha(computer, True, self.next_turn(turn), new_board, depth+1, alpha, beta)
@@ -244,13 +300,10 @@ class Game:
                 if result < best:
                     best_index = index   
                 
-                # if depth == 0:
-                #     print(f"{' ' * depth} isMax {maximizing_player} index {index} best index {best_index}")
-
                 best = min(best, result)
 
+                # prune tree
                 if best <= alpha:
-                    # print('pruned min')
                     return best, best_index
                 
                 beta = min(beta, best)
@@ -278,13 +331,21 @@ class Game:
                 self.board[move] = human
             else:         
                 ### change AI algorithm here       
-                not_used, move_index = self.minimax_alpha(computer, True, computer, self.board, 0, self.MIN, self.MAX)
+                # alpha beta                
+                # not_used, move_index = self.minimax_alpha(computer, True, computer, self.board, 0, self.MIN, self.MAX)               
+                
+                #mini max based of aima book
+                move_index = self.minimax_decision_aima(computer, computer, self.board, 0)
+
+                # mini max combined into one function
                 # move_index = self.minimax(computer, True, computer, self.board, 0)
-                #print(f'min final {move_index}')
+                
+                # print(f'min final {move_index}')
                 
                 legal = self.legal_moves(self.board)
 
                 self.board[legal[move_index]] = computer
+                
             self.display_board(self.board)
             winner = self.winner(self.board)
             turn = self.next_turn(turn)
