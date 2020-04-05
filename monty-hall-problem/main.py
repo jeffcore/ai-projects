@@ -113,9 +113,9 @@ def main():
         if monty.is_winner:
             number_wins += 1
 
-        print(f'\nGames Played: {number_games} Wins: {number_wins} Win Percentage {(number_wins/number_games)*100:.2f}%\n')
+        print(f'\nGames Played: {number_games}\nWins: {number_wins}\nWin Percentage: {(number_wins/number_games)*100:.2f}%\n')
 
-        result = input('do you want to play again? >>> (y or n)')
+        result = input('do you want to play again? >>> (y or n) ')
         if result ==  'n' or result == 'no':
             break
 

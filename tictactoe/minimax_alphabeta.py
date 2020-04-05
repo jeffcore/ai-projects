@@ -212,7 +212,7 @@ class Game:
 
         print(f'best_scores {best_scores}')
 
-        return
+        return best_scores.index(max(best_scores))
              
         
     def minimax_aima(self, computer, maximizing_player, turn, board, depth):
