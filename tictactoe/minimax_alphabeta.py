@@ -333,10 +333,10 @@ class Game:
             else:         
                 ### change AI algorithm here       
                 # alpha beta                
-                # not_used, move_index = self.minimax_alpha(computer, True, computer, self.board, 0, self.MIN, self.MAX)               
+                not_used, move_index = self.minimax_alpha(computer, True, computer, self.board, 0, self.MIN, self.MAX)               
                 
                 #mini max based of aima book
-                move_index = self.minimax_decision_aima(computer, computer, self.board, 0)
+                # move_index = self.minimax_decision_aima(computer, computer, self.board, 0)
 
                 # mini max combined into one function
                 # move_index = self.minimax(computer, True, computer, self.board, 0)

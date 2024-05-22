@@ -53,8 +53,10 @@ class NQueens():
             # check diagonal left UP    if position is 3 previous position cant be [1,2,3,NONE]   
             elif self.col_placement[i] == self.col_placement[row] - (row-i):
                 return False
-            # check diagonal right UP if position is 1 previous position cant be [1,2,3,NONE]   
-            elif self.col_placement[i] + i == row + self.col_placement[row]:
+            # check diagonal right UP if position is 1 previous position cant be [3,2,1,NONE]
+            #    3 + 0 = 2 + 1
+            # elif self.col_placement[i] + i == row + self.col_placement[row]:
+            elif self.col_placement[i] == (row - i) + self.col_placement[row]:
                 return False
              
         return True
@@ -86,7 +88,7 @@ class NQueens():
             self.print_board(board)
         
 def main():        
-    n_queens = NQueens(4)
+    n_queens = NQueens(8)
     n_queens.run()
     n_queens.print_results()
 
