@@ -1,0 +1,6 @@
+transformers
+tensorboard
+numpy
+tokenizers
+datasets
+tqdm

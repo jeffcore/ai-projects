@@ -18,6 +18,15 @@ The implementation includes the following components:
 - **DecoderLayer**: Combines self-attention and feed-forward networks with residual connections and layer normalization
 - **DecoderOnlyTransformer**: The main model that stacks multiple decoder layers
 
+## Docker Installation
+   ```bash
+   docker-compose build pytorch-latest-ai-projects --no-cache
+   docker-compose up pytorch-latest-ai-projects
+   ```
+   
+http://localhost:8889/lab
+
+
 ## Usage
 
 1. Install the required dependencies:

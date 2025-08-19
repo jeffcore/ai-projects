@@ -1,0 +1,23 @@
+version: '3.8'
+# https://hub.docker.com/r/tensorflow/tensorflow/tags
+
+services:
+
+  pytorch-latest-ai-projects:
+    build:
+      context: .
+      dockerfile: pytorch.dockerfile
+    container_name: pytorch-ai-projects
+    ports:
+      - "8889:8888"
+    volumes:
+      - .:/workspace
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
